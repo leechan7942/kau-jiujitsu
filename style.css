@@ -231,6 +231,12 @@ body {
     align-items: center;
 }
 
+/* 특정 카드 제목 크기 미세 조정 (0.5pt 감소) */
+.benefit-card:nth-of-type(2) h3,
+.benefit-card.highlight-card h3 {
+    font-size: 1.1rem;
+}
+
 .text-box p {
     font-size: 0.95rem;
     color: #aaa;
