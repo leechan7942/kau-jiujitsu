@@ -412,4 +412,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 갤러리 렌더링 후 3D 틸트 초기화
     initGalleryTilt();
+
+    // ── 15. 갤러리 스포트라이트 (모바일 가로 스크롤 전용) ──
+    function initGallerySpotlight() {
+        const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+        if (isDesktop) return;
+
+        document.querySelectorAll('.gallery-scroll').forEach(gallery => {
+            function updateSpotlight() {
+                const items = gallery.querySelectorAll('.gallery-item');
+                const containerRect = gallery.getBoundingClientRect();
+                const center = containerRect.left + containerRect.width / 2;
+
+                items.forEach(item => {
+                    const itemRect = item.getBoundingClientRect();
+                    const itemCenter = itemRect.left + itemRect.width / 2;
+                    const distance = Math.abs(center - itemCenter);
+                    const maxDist = containerRect.width / 2;
+                    const ratio = Math.min(distance / maxDist, 1);
+
+                    item.style.opacity = 1 - ratio * 0.35;
+                    item.style.transform = `scale(${1 - ratio * 0.04})`;
+                });
+            }
+
+            gallery.addEventListener('scroll', updateSpotlight, { passive: true });
+            updateSpotlight();
+        });
+    }
+
+    initGallerySpotlight();
+
+    // ── 16. 데스크톱 커서 글로우 ──
+    if (window.matchMedia('(hover: hover)').matches) {
+        const glow = document.createElement('div');
+        glow.classList.add('cursor-glow');
+        document.body.appendChild(glow);
+
+        let mouseX = 0, mouseY = 0;
+        let glowX = 0, glowY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        }, { passive: true });
+
+        function animateGlow() {
+            glowX += (mouseX - glowX) * 0.15;
+            glowY += (mouseY - glowY) * 0.15;
+            glow.style.transform = `translate(${glowX - 100}px, ${glowY - 100}px)`;
+            requestAnimationFrame(animateGlow);
+        }
+
+        requestAnimationFrame(animateGlow);
+    }
 });

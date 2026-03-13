@@ -5,6 +5,12 @@
     --accent-orange: #ff5500;
     --card-bg: #1a1a1a;
     --font-main: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --space-xs: 8px;
+    --space-sm: 16px;
+    --space-md: 24px;
+    --space-lg: 40px;
+    --space-xl: 64px;
+    --space-2xl: 80px;
 }
 
 * {
@@ -23,12 +29,10 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     overflow-x: hidden;
-    max-width: 600px;
     margin: 0 auto;
     background-image:
         radial-gradient(circle at 15% 50%, rgba(0, 229, 255, 0.05), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(255, 85, 0, 0.05), transparent 25%);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     min-height: 100vh;
     transition: background-color 0.6s ease;
 }
@@ -65,7 +69,7 @@ body {
     width: 100%;
     height: 100%;
     background-image: url('./images/hero_airplane.jpg');
-    background-size: contain;
+    background-size: cover;
     background-color: #0d0d0d;
     background-position: center;
     background-repeat: no-repeat;
@@ -81,7 +85,11 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.8) 100%);
+    background:
+        radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.7) 100%),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.85) 100%),
+        radial-gradient(circle at 20% 80%, rgba(0, 229, 255, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 85, 0, 0.10) 0%, transparent 50%);
     z-index: 2;
 }
 
@@ -115,6 +123,7 @@ body {
     line-height: 1.2;
     margin-bottom: 20px;
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+    letter-spacing: -0.02em;
 }
 
 /* ① 타이핑 효과 커서 */
@@ -221,21 +230,37 @@ body {
 
 /* 공통 컨테이너 */
 .container {
-    padding: 60px 20px;
+    padding: var(--space-xl) var(--space-sm);
+    max-width: 720px;
+    margin: 0 auto;
 }
 
 .section-title {
     font-size: 2.2rem;
     font-weight: 800;
-    margin-bottom: 40px;
+    margin-bottom: var(--space-lg);
     text-align: center;
+    letter-spacing: -0.02em;
 }
 
 /* QR 섹션 */
 .qr-section {
     text-align: center;
-    padding: 40px 20px 0;
+    padding: var(--space-lg) var(--space-sm) 0;
     background-color: var(--bg-color);
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.qr-code-wrap {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: inline-block;
+    position: relative;
 }
 
 .qr-desc {
@@ -255,6 +280,27 @@ body {
     border: 3px solid rgba(255, 255, 255, 0.8);
     background: #fff;
     padding: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.qr-code-wrap::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 170px;
+    height: 170px;
+    border: 2px solid var(--accent-orange);
+    border-radius: 16px;
+    animation: qrPulse 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes qrPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.4; }
+    50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.1; }
 }
 
 .qr-cta {
@@ -266,7 +312,7 @@ body {
 
 /* 통계 섹션 */
 .stats-section {
-    padding: 40px 20px;
+    padding: var(--space-lg) var(--space-sm);
     background-color: var(--bg-color);
 }
 
@@ -275,13 +321,27 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     text-align: center;
+    max-width: 720px;
+    margin: 0 auto;
 }
 
 .stat-item {
-    padding: 20px 10px;
-    background: var(--card-bg);
+    padding: 30px 15px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 3px solid;
+    border-image: linear-gradient(90deg, var(--accent-blue), var(--accent-orange)) 1;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.stat-icon {
+    font-size: 1.4rem;
+    color: var(--accent-blue);
+    margin-bottom: 10px;
+    opacity: 0.8;
 }
 
 .stat-number {
@@ -307,16 +367,18 @@ body {
 }
 
 .benefit-card {
-    background-color: var(--card-bg);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 16px;
-    padding: 25px 20px;
-    margin-bottom: 20px;
+    padding: var(--space-md) var(--space-sm);
+    margin-bottom: var(--space-sm);
     display: flex;
     align-items: flex-start;
     gap: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     position: relative;
     overflow: hidden;
 }
@@ -326,8 +388,11 @@ body {
 }
 
 .benefit-card.highlight-card {
-    background: linear-gradient(145deg, #1a1a2e, #16213e);
-    border: 1px solid rgba(0, 229, 255, 0.3);
+    background: linear-gradient(145deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 229, 255, 0.08);
 }
 
 .benefit-card.highlight-card .icon-box {
@@ -412,7 +477,7 @@ body {
 
 /* 갤러리 섹션 */
 .gallery-section {
-    padding: 60px 0 40px 0;
+    padding: var(--space-xl) 0 var(--space-lg) 0;
     background-color: #080808;
     overflow: hidden;
 }
@@ -426,6 +491,7 @@ body {
     color: #888;
     margin-bottom: 30px;
     font-size: 0.9rem;
+    padding: 0 var(--space-sm);
 }
 
 .gallery-container {
@@ -456,6 +522,7 @@ body {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
     cursor: pointer;
     transition: transform 0.3s ease;
+    aspect-ratio: 5 / 6;
 }
 
 .gallery-item:active {
@@ -464,8 +531,14 @@ body {
 
 .gallery-item::after {
     content: '';
-    display: block;
-    padding-bottom: 120%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .gallery-item img {
@@ -607,9 +680,12 @@ body {
 
 /* CTA 섹션 */
 .cta-section {
-    padding: 80px 20px 40px;
+    padding: var(--space-2xl) var(--space-sm) var(--space-lg);
     text-align: center;
-    background: linear-gradient(to top, #111 0%, var(--bg-color) 100%);
+    background:
+        radial-gradient(circle at 30% 50%, rgba(255, 85, 0, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 70% 50%, rgba(0, 229, 255, 0.04) 0%, transparent 50%),
+        linear-gradient(to top, #111 0%, var(--bg-color) 100%);
 }
 
 .cta-title {
@@ -661,6 +737,23 @@ body {
 @keyframes ctaPulse {
     0%, 100% { box-shadow: 0 10px 20px rgba(255, 85, 0, 0.3); }
     50% { box-shadow: 0 10px 30px rgba(255, 85, 0, 0.5), 0 0 40px rgba(255, 85, 0, 0.15); }
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    animation: btnShine 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes btnShine {
+    0% { left: -100%; }
+    50%, 100% { left: 150%; }
 }
 
 .btn-primary:active {
@@ -857,19 +950,28 @@ footer {
 /* ④ 섹션 구분선 글로우 */
 .section-divider {
     position: relative;
-    height: 2px;
+    height: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    background: linear-gradient(to bottom, var(--bg-color), #080808);
+}
+
+.section-divider:nth-of-type(2) {
+    background: linear-gradient(to bottom, var(--bg-color), #0a0a12);
+}
+
+.section-divider:nth-of-type(4) {
+    background: linear-gradient(to bottom, #080808, var(--bg-color));
 }
 
 .divider-glow {
-    width: 80%;
+    width: 60%;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-orange), transparent);
     position: relative;
-    opacity: 0.6;
+    opacity: 0.4;
 }
 
 .divider-glow::after {
@@ -938,6 +1040,58 @@ footer {
     transition: background-color 0.6s ease;
 }
 
+/* 데스크톱 커서 글로우 */
+.cursor-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.08), transparent 70%);
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: screen;
+    will-change: transform;
+}
+
+/* 데스크톱 hover 상태 */
+@media (hover: hover) {
+    .benefit-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .benefit-card.highlight-card:hover {
+        border-color: rgba(0, 229, 255, 0.4);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 229, 255, 0.12);
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.05);
+    }
+
+    .gallery-item:hover::before {
+        opacity: 1;
+    }
+
+    .btn-secondary:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 28px rgba(255, 85, 0, 0.4);
+    }
+
+    .stat-item:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
 /* 모션 감소 대응 */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -951,11 +1105,14 @@ footer {
     .particles-container { display: none; }
     .gradient-flow { animation: none !important; }
     .typing-cursor { display: none; }
+    .cursor-glow { display: none; }
 }
 
 /* 반응형: 태블릿 */
 @media (min-width: 768px) {
-    body {
+    .container,
+    .stats-grid,
+    .qr-section {
         max-width: 768px;
     }
 
@@ -986,16 +1143,35 @@ footer {
 
 /* 반응형: 데스크톱 */
 @media (min-width: 1024px) {
-    body {
-        max-width: 1024px;
+    .container,
+    .stats-grid,
+    .qr-section {
+        max-width: 900px;
+    }
+
+    .gallery-scroll {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-sm);
+        overflow-x: visible;
+        scroll-snap-type: none;
+        padding: 0 var(--space-sm) var(--space-sm) var(--space-sm);
     }
 
     .gallery-item {
-        flex: 0 0 45%;
+        flex: none;
+    }
+
+    .swipe-hint {
+        display: none;
     }
 
     .benefits-section .container {
         display: grid;
         grid-template-columns: 1fr;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
     }
 }
