@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollProgress = document.querySelector('.scroll-progress');
 
     function updateScrollProgress() {
+        if (!scrollProgress) return;
         const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroContent = document.querySelector('.hero-content');
 
     function updateParallax() {
+        if (!heroBg || !heroContent) return;
         const scrollY = window.scrollY;
         const heroHeight = window.innerHeight;
 
@@ -106,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── 7. 도트 네비게이션 ──
     const dotNav = document.querySelector('.dot-nav');
-    const dotLinks = dotNav.querySelectorAll('a');
+    const dotLinks = dotNav ? dotNav.querySelectorAll('a') : [];
     const sections = [];
 
     dotLinks.forEach(link => {
@@ -116,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateDotNav() {
+        if (!dotNav) return;
         const scrollY = window.scrollY;
 
         // 히어로 섹션을 지나면 도트 네비 표시
@@ -152,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTop = document.querySelector('.back-to-top');
 
     function updateBackToTop() {
+        if (!backToTop) return;
         if (window.scrollY > window.innerHeight) {
             backToTop.classList.add('visible');
         } else {
@@ -159,9 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    backToTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if (backToTop) {
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 
     // ── 9. 리플 이펙트 ──
     const rippleTargets = document.querySelectorAll('.benefit-card, .btn-primary, .btn-secondary');
@@ -325,16 +331,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     function updateSectionColors() {
-        const scrollY = window.scrollY;
         const vh = window.innerHeight;
 
         sectionColorMap.forEach(({ selector, bg }) => {
-            const el = document.querySelector(selector);
-            if (!el) return;
-            const rect = el.getBoundingClientRect();
-            if (rect.top < vh * 0.7 && rect.bottom > vh * 0.3) {
-                document.body.style.backgroundColor = bg;
-            }
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < vh * 0.7 && rect.bottom > vh * 0.3) {
+                    document.body.style.backgroundColor = bg;
+                }
+            });
         });
     }
 
