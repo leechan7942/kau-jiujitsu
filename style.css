@@ -261,8 +261,16 @@ body {
 .text-box h3 {
     font-size: 1.2rem;
     margin-bottom: 8px;
-    display: flex;
-    align-items: center;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+
+.text-box h3 .en-sub {
+    display: block;
+    font-size: 0.6em;
+    opacity: 0.7;
+    margin-top: 2px;
 }
 
 .benefit-card:nth-of-type(2) h3,
