@@ -14,20 +14,34 @@
     font-family: var(--font-main);
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
     overflow-x: hidden;
-    /* 에브리타임 환경에서 깔끔하게 보이도록 모바일 기준 최대 너비 설정 */
     max-width: 600px;
     margin: 0 auto;
     background-image:
         radial-gradient(circle at 15% 50%, rgba(0, 229, 255, 0.05), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(255, 85, 0, 0.05), transparent 25%);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    /* 데스크탑에서 볼 때 양옆 구분을 위함 */
     min-height: 100vh;
+}
+
+/* 스크롤 프로그레스 바 */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-orange));
+    z-index: 1000;
+    transition: width 0.1s linear;
 }
 
 /* 히어로 섹션 */
@@ -35,7 +49,6 @@ body {
     position: relative;
     height: 100vh;
     height: 100dvh;
-    /* 모바일 브라우저 툴바 제외 실제 화면 크기 */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -54,8 +67,8 @@ body {
     background-position: center 20%;
     z-index: 1;
     transform: scale(1.05);
-    /* 약간 확대해둠 (애니메이션 요소) */
     animation: slowZoom 20s infinite alternate;
+    will-change: transform;
 }
 
 .hero-overlay {
@@ -69,13 +82,8 @@ body {
 }
 
 @keyframes slowZoom {
-    0% {
-        transform: scale(1.0);
-    }
-
-    100% {
-        transform: scale(1.15);
-    }
+    0% { transform: scale(1.0); }
+    100% { transform: scale(1.15); }
 }
 
 .hero-content {
@@ -137,6 +145,7 @@ body {
     gap: 10px;
     opacity: 0.8;
     animation: bounce 2s infinite;
+    cursor: pointer;
 }
 
 .scroll-indicator p {
@@ -146,22 +155,9 @@ body {
 }
 
 @keyframes bounce {
-
-    0%,
-    20%,
-    50%,
-    80%,
-    100% {
-        transform: translateY(0);
-    }
-
-    40% {
-        transform: translateY(-10px);
-    }
-
-    60% {
-        transform: translateY(-5px);
-    }
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
 }
 
 /* 공통 컨테이너 */
@@ -174,6 +170,42 @@ body {
     font-weight: 800;
     margin-bottom: 40px;
     text-align: center;
+}
+
+/* 통계 섹션 */
+.stats-section {
+    padding: 40px 20px;
+    background-color: var(--bg-color);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    text-align: center;
+}
+
+.stat-item {
+    padding: 20px 10px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-orange));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 500;
 }
 
 /* 어필 포인트 섹션 */
@@ -192,7 +224,9 @@ body {
     gap: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .benefit-card:active {
@@ -231,7 +265,6 @@ body {
     align-items: center;
 }
 
-/* 특정 카드 제목 크기 미세 조정 (0.5pt 감소) */
 .benefit-card:nth-of-type(2) h3,
 .benefit-card.highlight-card h3 {
     font-size: 1.1rem;
@@ -244,6 +277,23 @@ body {
 
 .text-box p strong {
     color: #fff;
+}
+
+/* 리플 이펙트 */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(0);
+    animation: rippleEffect 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
 }
 
 /* 갤러리 섹션 */
@@ -275,8 +325,6 @@ body {
     scroll-snap-type: x mandatory;
     gap: 15px;
     padding: 0 20px 20px 20px;
-    /* 양옆 여백 및 하단 스크롤바 공간 */
-    /* 스크롤바 숨기기 (웹킷 기반) */
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -287,19 +335,23 @@ body {
 
 .gallery-item {
     flex: 0 0 85%;
-    /* 화면의 85% 차지 */
     scroll-snap-align: center;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:active {
+    transform: scale(0.97);
 }
 
 .gallery-item::after {
     content: '';
     display: block;
     padding-bottom: 120%;
-    /* 이미지 비율 강제 (세로형 직사각형) */
 }
 
 .gallery-item img {
@@ -309,6 +361,34 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+/* 갤러리 이미지 줌 아이콘 오버레이 */
+.gallery-item::before {
+    content: '\f065';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.gallery-item:active::before {
+    opacity: 1;
 }
 
 .swipe-hint {
@@ -320,17 +400,95 @@ body {
 }
 
 @keyframes pulse {
-    0% {
-        opacity: 0.5;
-    }
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
 
-    50% {
-        opacity: 1;
-    }
+/* 풀스크린 이미지 모달 */
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
 
-    100% {
-        opacity: 0.5;
-    }
+.image-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.image-modal img {
+    max-width: 95%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.image-modal.active img {
+    transform: scale(1);
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2001;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2001;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.modal-nav.prev { left: 10px; }
+.modal-nav.next { right: 10px; }
+
+.modal-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    z-index: 2001;
 }
 
 /* CTA 섹션 */
@@ -365,11 +523,20 @@ body {
     margin-bottom: 15px;
     box-shadow: 0 10px 20px rgba(255, 85, 0, 0.3);
     transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+    animation: ctaPulse 3s ease-in-out infinite;
+}
+
+@keyframes ctaPulse {
+    0%, 100% { box-shadow: 0 10px 20px rgba(255, 85, 0, 0.3); }
+    50% { box-shadow: 0 10px 30px rgba(255, 85, 0, 0.5), 0 0 40px rgba(255, 85, 0, 0.15); }
 }
 
 .btn-primary:active {
     transform: translateY(2px);
     box-shadow: 0 5px 10px rgba(255, 85, 0, 0.3);
+    animation: none;
 }
 
 .btn-secondary {
@@ -383,11 +550,15 @@ body {
     font-weight: 600;
     text-decoration: none;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s ease, border-color 0.3s ease;
+}
+
+.btn-secondary:active {
+    transform: translateY(2px);
 }
 
 .btn-secondary i {
     color: #E1306C;
-    /* 인스타그램 브랜드 컬러 */
     margin-right: 5px;
 }
 
@@ -399,7 +570,75 @@ footer {
     font-size: 0.8rem;
 }
 
-/* Scroll Fade Animation Class */
+/* 플로팅 도트 네비게이션 */
+.dot-nav {
+    position: fixed;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.dot-nav.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dot-nav a {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: block;
+    transition: background 0.3s ease, transform 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dot-nav a.active {
+    background: var(--accent-orange);
+    transform: scale(1.4);
+}
+
+/* Back to Top 버튼 */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 15px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 85, 0, 0.8);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(255, 85, 0, 0.3);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:active {
+    transform: scale(0.9);
+}
+
+/* Scroll Fade Animation */
 .fade-in {
     opacity: 0;
     transform: translateY(30px);
@@ -409,4 +648,86 @@ footer {
 .fade-in.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Staggered 카드 슬라이드 인 */
+.slide-in-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.slide-in-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* QR 코드 스케일 인 */
+.scale-in {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.scale-in.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* 모션 감소 대응 */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .hero-bg { animation: none; transform: scale(1); }
+    .scroll-progress { transition: none; }
+}
+
+/* 반응형: 태블릿 */
+@media (min-width: 768px) {
+    body {
+        max-width: 768px;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+    }
+
+    .stats-grid {
+        gap: 20px;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+    }
+
+    .gallery-item {
+        flex: 0 0 60%;
+    }
+
+    .benefit-card {
+        padding: 30px 25px;
+    }
+}
+
+/* 반응형: 데스크톱 */
+@media (min-width: 1024px) {
+    body {
+        max-width: 1024px;
+    }
+
+    .gallery-item {
+        flex: 0 0 45%;
+    }
+
+    .benefits-section .container {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
 }
