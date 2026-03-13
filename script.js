@@ -248,7 +248,97 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, { passive: true });
 
-    // ── 11. 통합 스크롤 핸들러 (requestAnimationFrame 최적화) ──
+    // ── 11. 타이핑 효과 ──
+    const typingText = document.getElementById('typingText');
+    const typingCursor = document.querySelector('.typing-cursor');
+    const textToType = '매트 위에서 증명하는';
+
+    if (typingText) {
+        let charIndex = 0;
+        function typeChar() {
+            if (charIndex < textToType.length) {
+                typingText.textContent += textToType[charIndex];
+                charIndex++;
+                setTimeout(typeChar, 80 + Math.random() * 60);
+            } else if (typingCursor) {
+                setTimeout(() => typingCursor.classList.add('done'), 1500);
+            }
+        }
+        setTimeout(typeChar, 800);
+    }
+
+    // ── 12. 파티클/별 배경 ──
+    const particlesContainer = document.getElementById('particles');
+
+    if (particlesContainer) {
+        const particleCount = 25;
+        const colors = ['', 'blue', 'orange'];
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const colorClass = colors[Math.floor(Math.random() * colors.length)];
+            if (colorClass) particle.classList.add(colorClass);
+
+            const size = 1.5 + Math.random() * 3;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (6 + Math.random() * 10) + 's';
+            particle.style.animationDelay = (Math.random() * 8) + 's';
+
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // ── 13. 갤러리 3D 틸트 ──
+    function initGalleryTilt() {
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => {
+            item.addEventListener('touchmove', (e) => {
+                if (e.touches.length !== 1) return;
+                const rect = item.getBoundingClientRect();
+                const x = e.touches[0].clientX - rect.left;
+                const y = e.touches[0].clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateY = ((x - centerX) / centerX) * 8;
+                const rotateX = ((centerY - y) / centerY) * 8;
+
+                item.classList.add('tilt-active');
+                item.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            }, { passive: true });
+
+            item.addEventListener('touchend', () => {
+                item.classList.remove('tilt-active');
+                item.style.transform = '';
+            }, { passive: true });
+        });
+    }
+
+    // ── 14. 스크롤 배경색 전환 ──
+    const sectionColorMap = [
+        { selector: '.stats-section', bg: '#0d0d0d' },
+        { selector: '.benefits-section', bg: '#0a0a12' },
+        { selector: '.gallery-section', bg: '#080808' },
+        { selector: '.cta-section', bg: '#0d0d0d' }
+    ];
+
+    function updateSectionColors() {
+        const scrollY = window.scrollY;
+        const vh = window.innerHeight;
+
+        sectionColorMap.forEach(({ selector, bg }) => {
+            const el = document.querySelector(selector);
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            if (rect.top < vh * 0.7 && rect.bottom > vh * 0.3) {
+                document.body.style.backgroundColor = bg;
+            }
+        });
+    }
+
+    // ── 통합 스크롤 핸들러 (requestAnimationFrame 최적화) ──
     let ticking = false;
 
     function onScroll() {
@@ -258,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateParallax();
                 updateDotNav();
                 updateBackToTop();
+                updateSectionColors();
                 ticking = false;
             });
             ticking = true;
@@ -271,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDotNav();
     updateBackToTop();
 
-    // ── 12. 동적 이미지 갤러리 렌더링 ──
+    // ── 동적 이미지 갤러리 렌더링 ──
     const allTrainingImages = ["training_01.webp", "training_02.webp", "training_03.webp", "training_04.webp", "training_05.webp", "training_06.webp", "training_07.webp"];
     const allActivityImages = ["activity_01.webp", "activity_02.webp", "activity_03.webp", "activity_04.webp", "activity_05.webp", "activity_06.webp", "activity_07.webp"];
     const allRandomImages = Array.from({ length: 75 }, (_, i) => `random_${String(i + 1).padStart(2, '0')}.webp`);
@@ -312,4 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGallery('training-gallery', allTrainingImages, './images/training/');
     renderGallery('activities-gallery', allActivityImages, './images/activities/');
     renderGallery('random-gallery', allRandomImages, './images/random/', true, 8);
+
+    // 갤러리 렌더링 후 3D 틸트 초기화
+    initGalleryTilt();
 });

@@ -113,6 +113,44 @@ body {
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
 }
 
+/* ① 타이핑 효과 커서 */
+.typing-cursor {
+    display: inline-block;
+    color: var(--accent-orange);
+    font-weight: 100;
+    animation: blink 0.7s step-end infinite;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.typing-cursor.done {
+    animation: blink 0.7s step-end 3;
+    animation-fill-mode: forwards;
+    opacity: 0;
+}
+
+/* ② 그래디언트 흐름 */
+.hero-title .highlight.gradient-flow {
+    color: transparent;
+    -webkit-text-stroke: 0;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-orange), #ff66cc, var(--accent-blue));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 .hero-title .highlight {
     color: transparent;
     -webkit-text-stroke: 1px var(--text-color);
@@ -682,6 +720,144 @@ footer {
     transform: scale(1);
 }
 
+/* ③ 파티클/별 배경 */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: particleFloat linear infinite;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+}
+
+.particle.blue {
+    background: rgba(0, 229, 255, 0.7);
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+}
+
+.particle.orange {
+    background: rgba(255, 85, 0, 0.7);
+    box-shadow: 0 0 8px rgba(255, 85, 0, 0.5);
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(90vh) scale(1);
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-20px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* ④ 섹션 구분선 글로우 */
+.section-divider {
+    position: relative;
+    height: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.divider-glow {
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-orange), transparent);
+    position: relative;
+    opacity: 0.6;
+}
+
+.divider-glow::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 0;
+    width: 30%;
+    height: 9px;
+    background: radial-gradient(ellipse, rgba(0, 229, 255, 0.6), transparent);
+    filter: blur(3px);
+    animation: glowSlide 3s ease-in-out infinite;
+}
+
+@keyframes glowSlide {
+    0% { left: -30%; }
+    100% { left: 100%; }
+}
+
+/* ⑤ 아이콘 회전/바운스 */
+.icon-box i {
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.benefit-card.visible .icon-box i {
+    animation: iconBounceIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes iconBounceIn {
+    0% { transform: scale(0) rotate(-180deg); }
+    60% { transform: scale(1.2) rotate(10deg); }
+    80% { transform: scale(0.9) rotate(-5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+.benefit-card .icon-box:hover i,
+.benefit-card:active .icon-box i {
+    transform: rotate(15deg) scale(1.15);
+}
+
+/* ⑥ 갤러리 3D 틸트 */
+.gallery-item {
+    transform-style: preserve-3d;
+    perspective: 800px;
+}
+
+.gallery-item.tilt-active {
+    transition: none !important;
+}
+
+/* ⑦ 텍스트 블러 해제 */
+.blur-reveal {
+    filter: blur(8px);
+    transition: filter 1s ease, opacity 0.8s ease, transform 0.8s ease;
+}
+
+.blur-reveal.visible {
+    filter: blur(0);
+}
+
+/* ⑧ 스크롤 배경색 전환 */
+body {
+    transition: background-color 0.6s ease;
+}
+
+.stats-section,
+.benefits-section,
+.gallery-section,
+.cta-section {
+    transition: background-color 0.6s ease;
+}
+
 /* 모션 감소 대응 */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -691,6 +867,10 @@ footer {
     }
     .hero-bg { animation: none; transform: scale(1); }
     .scroll-progress { transition: none; }
+    .blur-reveal { filter: none !important; }
+    .particles-container { display: none; }
+    .gradient-flow { animation: none !important; }
+    .typing-cursor { display: none; }
 }
 
 /* 반응형: 태블릿 */
