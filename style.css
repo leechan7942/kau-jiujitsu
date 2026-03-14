@@ -11,6 +11,10 @@
     --space-lg: 40px;
     --space-xl: 64px;
     --space-2xl: 80px;
+    --text-muted: #aaa;
+    --text-dim: #888;
+    --bg-dark: #080808;
+    --bg-mid: #111;
 }
 
 * {
@@ -76,7 +80,6 @@ body {
     z-index: 1;
     transform: scale(1.05);
     animation: slowZoom 20s infinite alternate;
-    will-change: transform;
 }
 
 .hero-overlay {
@@ -264,7 +267,7 @@ body {
 }
 
 .qr-desc {
-    color: #aaa;
+    color: var(--text-muted);
     font-size: 0.9rem;
     margin-bottom: 15px;
 }
@@ -337,7 +340,7 @@ body {
 
 .stat-label {
     font-size: 0.75rem;
-    color: #888;
+    color: var(--text-dim);
     font-weight: 500;
 }
 
@@ -432,7 +435,7 @@ body {
 
 .text-box p {
     font-size: 0.95rem;
-    color: #aaa;
+    color: var(--text-muted);
 }
 
 .text-box p strong {
@@ -459,8 +462,9 @@ body {
 /* 갤러리 섹션 */
 .gallery-section {
     padding: var(--space-xl) 0 var(--space-lg) 0;
-    background-color: #080808;
+    background-color: var(--bg-dark);
     overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .gallery-section .section-title {
@@ -469,7 +473,7 @@ body {
 
 .gallery-section .section-desc {
     text-align: center;
-    color: #888;
+    color: var(--text-dim);
     margin-bottom: 30px;
     font-size: 0.9rem;
     padding: 0 var(--space-sm);
@@ -561,7 +565,7 @@ body {
 
 .swipe-hint {
     text-align: center;
-    color: #666;
+    color: #999;
     font-size: 0.8rem;
     margin-top: 10px;
     animation: pulse 2s infinite;
@@ -666,7 +670,7 @@ body {
     background:
         radial-gradient(circle at 30% 50%, rgba(255, 85, 0, 0.06) 0%, transparent 50%),
         radial-gradient(circle at 70% 50%, rgba(0, 229, 255, 0.04) 0%, transparent 50%),
-        linear-gradient(to top, #111 0%, var(--bg-color) 100%);
+        linear-gradient(to top, var(--bg-mid) 0%, var(--bg-color) 100%);
 }
 
 .cta-title {
@@ -687,7 +691,7 @@ body {
 }
 
 .cta-desc {
-    color: #aaa;
+    color: var(--text-muted);
     margin-bottom: 40px;
 }
 
@@ -728,13 +732,7 @@ body {
     width: 50%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-    animation: btnShine 3s ease-in-out infinite;
     pointer-events: none;
-}
-
-@keyframes btnShine {
-    0% { left: -100%; }
-    50%, 100% { left: 150%; }
 }
 
 .btn-primary:active {
@@ -770,7 +768,7 @@ footer {
     margin-top: 60px;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: #555;
+    color: var(--text-dim);
     font-size: 0.8rem;
 }
 
@@ -800,6 +798,8 @@ footer {
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.3);
     display: block;
+    padding: 17px;
+    background-clip: content-box;
     transition: background 0.3s ease, transform 0.3s ease;
     -webkit-tap-highlight-color: transparent;
 }
@@ -989,7 +989,6 @@ footer {
     pointer-events: none;
     z-index: 9999;
     mix-blend-mode: screen;
-    will-change: transform;
 }
 
 /* 데스크톱 hover 상태 */

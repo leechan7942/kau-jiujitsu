@@ -277,7 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const particlesContainer = document.getElementById('particles');
 
     if (particlesContainer) {
-        const particleCount = 25;
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const particleCount = isMobile ? 12 : 25;
         const colors = ['', 'blue', 'orange'];
 
         for (let i = 0; i < particleCount; i++) {
@@ -330,18 +331,32 @@ document.addEventListener('DOMContentLoaded', () => {
         { selector: '.cta-section', bg: '#0d0d0d' }
     ];
 
+    const sectionColorElements = sectionColorMap.map(({ selector, bg }) => ({
+        elements: [...document.querySelectorAll(selector)],
+        bg
+    }));
+
     function updateSectionColors() {
         const vh = window.innerHeight;
+        const center = vh / 2;
+        let closestBg = null;
+        let closestDist = Infinity;
 
-        sectionColorMap.forEach(({ selector, bg }) => {
-            const elements = document.querySelectorAll(selector);
+        sectionColorElements.forEach(({ elements, bg }) => {
             elements.forEach(el => {
                 const rect = el.getBoundingClientRect();
                 if (rect.top < vh * 0.7 && rect.bottom > vh * 0.3) {
-                    document.body.style.backgroundColor = bg;
+                    const sectionCenter = (rect.top + rect.bottom) / 2;
+                    const dist = Math.abs(center - sectionCenter);
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                        closestBg = bg;
+                    }
                 }
             });
         });
+
+        document.body.style.backgroundColor = closestBg || '#0d0d0d';
     }
 
     // ── 통합 스크롤 핸들러 (requestAnimationFrame 최적화) ──
@@ -371,7 +386,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── 동적 이미지 갤러리 렌더링 ──
     const allTrainingImages = ["training_01.webp", "training_02.webp", "training_03.webp", "training_04.webp", "training_05.webp", "training_06.webp", "training_07.webp"];
     const allActivityImages = ["activity_01.webp", "activity_02.webp", "activity_03.webp", "activity_04.webp", "activity_05.webp", "activity_06.webp", "activity_07.webp"];
-    const allRandomImages = Array.from({ length: 75 }, (_, i) => `random_${String(i + 1).padStart(2, '0')}.webp`);
+    const allRandomImages = Array.from({ length: 75 }, (_, i) => i + 1)
+        .filter(n => n !== 40) // random_40.webp 삭제됨
+        .map(n => `random_${String(n).padStart(2, '0')}.webp`);
 
     function shuffle(array) {
         const arr = [...array];
@@ -419,8 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isDesktop) return;
 
         document.querySelectorAll('.gallery-scroll').forEach(gallery => {
+            const items = [...gallery.querySelectorAll('.gallery-item')];
+            let spotlightTicking = false;
+
             function updateSpotlight() {
-                const items = gallery.querySelectorAll('.gallery-item');
                 const containerRect = gallery.getBoundingClientRect();
                 const center = containerRect.left + containerRect.width / 2;
 
@@ -436,7 +455,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            gallery.addEventListener('scroll', updateSpotlight, { passive: true });
+            gallery.addEventListener('scroll', () => {
+                if (!spotlightTicking) {
+                    requestAnimationFrame(() => {
+                        updateSpotlight();
+                        spotlightTicking = false;
+                    });
+                    spotlightTicking = true;
+                }
+            }, { passive: true });
             updateSpotlight();
         });
     }
@@ -451,6 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let mouseX = 0, mouseY = 0;
         let glowX = 0, glowY = 0;
+        let glowRafId;
 
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
@@ -461,9 +489,17 @@ document.addEventListener('DOMContentLoaded', () => {
             glowX += (mouseX - glowX) * 0.15;
             glowY += (mouseY - glowY) * 0.15;
             glow.style.transform = `translate(${glowX - 100}px, ${glowY - 100}px)`;
-            requestAnimationFrame(animateGlow);
+            glowRafId = requestAnimationFrame(animateGlow);
         }
 
-        requestAnimationFrame(animateGlow);
+        glowRafId = requestAnimationFrame(animateGlow);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cancelAnimationFrame(glowRafId);
+            } else {
+                glowRafId = requestAnimationFrame(animateGlow);
+            }
+        });
     }
 });
