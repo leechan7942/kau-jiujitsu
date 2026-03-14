@@ -806,6 +806,7 @@ footer {
 
 .dot-nav a.active {
     background: var(--accent-orange);
+    background-clip: content-box;
     transform: scale(1.4);
 }
 
